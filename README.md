@@ -1,5 +1,7 @@
 # 🧱 Breakout
 
+You can view the pretty version of the notes [here](https://jac-cs-game-programming-f21.github.io/Notes/#/2-Breakout).
+
 ## 🎯 Objectives
 
 - **Sprite Sheets**: Allows us to condense all the images we need to load for our game into one big image, with each sprite assigned a specific area in the sheet.
