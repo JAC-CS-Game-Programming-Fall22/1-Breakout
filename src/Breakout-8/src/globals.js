@@ -17,6 +17,7 @@ export const CANVAS_WIDTH = canvas.width;
 export const CANVAS_HEIGHT = canvas.height;
 
 export const TILE_SIZE = 16;
+export const MAX_HIGH_SCORES = 10;
 
 export const keys = {};
 

@@ -1,6 +1,9 @@
 /**
  * Breakout-2
- * "The Bounce Update"
+ * The "Bounce" Update
+ *
+ * Original Lua by: Colton Ogden (cogden@cs50.harvard.edu)
+ * Adapted to JS by: Vikram Singh (vikram.singh@johnabbott.qc.ca)
  *
  * Originally developed by Atari in 1976. An effective evolution of
  * Pong, Breakout ditched the two-player mechanic in favor of a single-

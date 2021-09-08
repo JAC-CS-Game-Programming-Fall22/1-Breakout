@@ -23,6 +23,7 @@ export default class EnterHighScoreState extends State {
 
 	enter(parameters) {
 		this.score = parameters.score;
+		this.highlightedChar = 0;
 	}
 
 	update(dt) {
