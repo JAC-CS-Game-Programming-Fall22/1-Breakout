@@ -7,8 +7,8 @@ export default class Sprite {
 	 * quad in the sprite sheet onto the canvas.
 	 *
 	 * @param {Graphic} graphic
-	 * @param {Number} x
-	 * @param {Number} y
+	 * @param {Number} x The X coordinate of the sprite in the sprite sheet.
+	 * @param {Number} y The X coordinate of the sprite in the sprite sheet.
 	 * @param {Number} width
 	 * @param {Number} height
 	 */
@@ -20,15 +20,21 @@ export default class Sprite {
 		this.height = height;
 	}
 
-	render(dx, dy) {
+	/**
+	 * Draws a sprite onto the canvas at the specified location.
+	 *
+	 * @param {Number} canvasX Where the sprite will be drawn on the X axis.
+	 * @param {Number} canvasY Where the sprite will be drawn on the Y axis.
+	 */
+	render(canvasX, canvasY) {
 		context.drawImage(
 			this.graphic.image,
 			this.x,
 			this.y,
 			this.width,
 			this.height,
-			dx,
-			dy,
+			canvasX,
+			canvasY,
 			this.width,
 			this.height,
 		);
