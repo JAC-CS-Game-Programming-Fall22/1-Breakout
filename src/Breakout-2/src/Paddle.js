@@ -38,7 +38,7 @@ export default class Paddle {
 
 		this.paddleSpeed = 500;
 
-		this.sprites = SpriteManager.generateSpritePaddles();
+		this.sprites = SpriteManager.generatePaddleSprites();
 	}
 
 	update(dt) {

@@ -11,7 +11,7 @@ export default class SpriteManager {
 	 *
 	 * @returns An array of paddle sprites.
 	 */
-	static generateSpritePaddles() {
+	static generatePaddleSprites() {
 		const x = 0;
 		let y = TILE_SIZE * 4;
 		const sprites = [];
