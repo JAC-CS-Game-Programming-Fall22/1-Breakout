@@ -30,7 +30,7 @@ export default class GameOverState extends State {
 	 * it finds an element for which the provided function returns true; otherwise
 	 * it returns false. It doesn't modify the array.
 	 *
-	 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
+	 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
 	 *
 	 * @returns Whether the score is greater than any current high score.
 	 */

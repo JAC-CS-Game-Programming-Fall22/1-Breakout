@@ -26,6 +26,12 @@ export default class PlayState extends State {
 	}
 
 	update(dt) {
+		/**
+		 * In short, "pausing" a game simply means to not run the
+		 * update part of the game loop since we don't want any game
+		 * logic to run while the game is paused. This is what the
+		 * return statements are for below.
+		 */
 		if (this.paused) {
 			if (keys.p) {
 				keys.p = false;

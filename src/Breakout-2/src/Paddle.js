@@ -72,6 +72,13 @@ export default class Paddle {
 	}
 
 	render() {
+		/**
+		 * +4 since there are 4 sizes of paddles.
+		 *
+		 * If you find yourself writing comments to explain magic numbers, you
+		 * may want to rethink how you're doing things! This magic number should
+		 * probably go in its own variable/constant. Where do you think that should live?
+		 */
 		this.sprites[this.size + 4 * this.skin].render(this.x, this.y);
 	}
 }

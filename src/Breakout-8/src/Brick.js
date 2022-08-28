@@ -75,7 +75,7 @@ export default class Brick {
 		 * The filter() method creates a new array with all elements
 		 * that pass the test implemented by the provided function.
 		 *
-		 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+		 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
 		 */
 		this.particles = this.particles.filter((particle) => particle.isAlive);
 	}

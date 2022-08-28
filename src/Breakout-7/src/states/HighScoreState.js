@@ -39,7 +39,7 @@ export default class HighScoreState extends State {
 		context.fillStyle = "white";
 		context.font = "15px Joystix";
 		context.textAlign = 'center';
-		context.fillText(`HIGH SCORES`, CANVAS_WIDTH * 0.5, CANVAS_HEIGHT * 0.15);
+		context.fillText(`🎉 HIGH SCORES 🎉`, CANVAS_WIDTH * 0.5, CANVAS_HEIGHT * 0.15);
 
 		for (let i = 0; i < 10; i++) {
 			const name = this.highScores[i].name ?? '---';

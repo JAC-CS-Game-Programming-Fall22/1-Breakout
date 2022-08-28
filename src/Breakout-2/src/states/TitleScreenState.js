@@ -38,8 +38,6 @@ export default class TitleScreenState extends State {
 
 		// Confirm whichever option we have selected to change screens.
 		if (keys.Enter) {
-			sounds.confirm.play();
-
 			if (this.highlighted === this.menuOptions.start) {
 				stateMachine.change('play');
 			}

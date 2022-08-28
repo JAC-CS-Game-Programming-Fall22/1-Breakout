@@ -3,7 +3,7 @@ import Sprite from "./Sprite.js";
 
 /**
  * This class is responsible for holding the functions to "cut up"
- * the spritesheet into various quads that we'll need to render.
+ * the sprite sheet into various quads that we'll need to render.
  */
 export default class SpriteManager {
 	/**

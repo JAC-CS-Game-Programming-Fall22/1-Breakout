@@ -3,7 +3,7 @@ import Sprite from "./Sprite.js";
 
 /**
  * This class is responsible for holding the functions to "cut up"
- * the spritesheet into various quads that we'll need to render.
+ * the sprite sheet into various quads that we'll need to render.
  */
 export default class SpriteManager {
 	/**
@@ -16,7 +16,7 @@ export default class SpriteManager {
 		let y = TILE_SIZE * 4;
 		const sprites = [];
 
-		for (let i = 0; i < 3; i++) {
+		for (let i = 0; i < 4; i++) {
 			sprites.push(new Sprite(images.spriteSheet, x, y, TILE_SIZE * 2, TILE_SIZE)); // Small
 			sprites.push(new Sprite(images.spriteSheet, x + TILE_SIZE * 2, y, TILE_SIZE * 4, TILE_SIZE)); // Medium
 			sprites.push(new Sprite(images.spriteSheet, x + TILE_SIZE * 6, y, TILE_SIZE * 6, TILE_SIZE)); // Large
@@ -93,6 +93,20 @@ export default class SpriteManager {
 			sprites.push(new Sprite(images.spriteSheet, x, y, 10, 9));
 			x += 10;
 		}
+
+		return sprites;
+	}
+
+	/**
+	 * Retrieves all arrow sprites from the sprite sheet.
+	 *
+	 * @returns An array of arrow sprites.
+	 */
+	static generateArrowSprites() {
+		const sprites = [];
+
+		sprites.push(new Sprite(images.arrows, 0, 0, 24, 24));
+		sprites.push(new Sprite(images.arrows, 24, 0, 24, 24));
 
 		return sprites;
 	}

@@ -6,7 +6,7 @@ import { MAX_HIGH_SCORES } from "./globals.js";
  * is a simple way to store small key/value pairs (kind of like cookies)
  * for a particular domain on your browser.
  *
- * https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
  */
 export default class HighScoreManager {
 	static loadHighScores() {
@@ -43,14 +43,14 @@ export default class HighScoreManager {
 		/**
 		 * Sort the scores from highest to lowest.
 		 *
-		 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+		 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
 		 */
 		highScores = highScores.sort((a, b) => b.score - a.score);
 
 		/**
 		 * Only keep the top 10 scores.
 		 *
-		 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+		 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
 		 */
 		highScores = highScores.slice(0, MAX_HIGH_SCORES);
 

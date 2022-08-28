@@ -2,6 +2,7 @@ import {
 	CANVAS_HEIGHT,
 	CANVAS_WIDTH,
 	context,
+	sounds,
 	stateMachine,
 } from "./globals.js";
 

@@ -1,7 +1,13 @@
 import State from "./State.js";
-import stateMachine from "../StateMachine.js";
 import Paddle from "../Paddle.js";
-import { CANVAS_HEIGHT, CANVAS_WIDTH, context, images, keys, sounds } from "../globals.js";
+import {
+	CANVAS_HEIGHT,
+	CANVAS_WIDTH,
+	context,
+	images,
+	keys,
+	sounds,
+} from "../globals.js";
 
 /**
  * Represents the state of the game in which we are actively playing;
@@ -17,6 +23,12 @@ export default class PlayState extends State {
 	}
 
 	update(dt) {
+		/**
+		 * In short, "pausing" a game simply means to not run the
+		 * update part of the game loop since we don't want any game
+		 * logic to run while the game is paused. This is what the
+		 * return statements are for below.
+		 */
 		if (this.paused) {
 			if (keys.p) {
 				keys.p = false;

@@ -1,66 +1,74 @@
 # 🧱 Breakout
 
-You can view the pretty version of the notes [here](https://jac-cs-game-programming-f21.github.io/Notes/#/2-Breakout/).
+You can view the pretty version of the notes [here](https://jac-cs-game-programming-fall22.github.io/Notes/#/2-Breakout/).
 
 ## 🎯 Objectives
 
+- **Images (Sprites)**: How can we load images from memory to our game and draw them on the screen?
 - **Sprite Sheets**: Allows us to condense all the images we need to load for our game into one big image, with each sprite assigned a specific area in the sheet.
+- **State Machines**: Last week we used a rudimentary "state machine" for pong, which was really just a string variable and a few if statements in our love.update() function. This week we'll see how we can actually use a state machine class to allow us to transition in and out of different states more cleanly, and abstract this logic away from our main.js file and into separate classes.
 - **Procedural Layouts**: We'll take a look at how to dynamically generate bricks layouts so that no two levels are the same.
-- **Levels**: We'll introduce the concept of "levels" to our game, allowing a player to "progress" and changing what we're displaying to the screen accordingly.
+- **Levels**: We'll introduce the concept of "levels" to our game, allowing a player to progress and change what we're displaying to the screen accordingly.
+- **Mouse Input**: Last week we worked with keyboard input for Pong, and this week we'll see how to process mouse input.
 - **Player Health**: We'll learn how to keep track of player "health" using hearts to give them a number of chances before losing the game.
-- **Particle Systems**: We'll learn more about particle systems this week to provide more aesthetically pleasing qualities to our game.
 - **Collision Detection Revisited**: Collision detection will be a bit more advanced this week.
 - **Persistent Save Data**: In the context of high scores, it's useful to know how to save information relevant to our game so that the next time we open it, we can still access that old information.
+- **Music**: Similarly to how we added sound effects to our game last week, we'll see how to add music to our game this week and ensure that it loops during game execution.
+- **Particle Systems**: We'll learn more about particle systems this week to provide more aesthetically pleasing qualities to our game.
 
 Originally developed by Atari in 1976. An effective evolution of Pong, Breakout ditched the two-player mechanic in favor of a single-player game where the player, still controlling a paddle, was tasked with eliminating a screen full of differently placed bricks of varying values by deflecting a ball back at them.
 
 ![Breakout](images/Breakout.png)
 
-_Image courtesy of [Wikipedia](https://en.wikipedia.org/wiki/Breakout_(video_game))_
+_Image from [Wikipedia](https://en.wikipedia.org/wiki/Breakout_(video_game))_
 
 ## 🔨 Setup
 
 1. Clone the repo (or download the zip) for today's lecture, which you can find [here](https://github.com/JAC-CS-Game-Programming-F21/1-Flappy-Bird).
 2. Open the repo in Visual Studio Code.
-3. Thanks to my wonderful students, my life has been made infinitely easier with Visual Studio Code's "Live Server" extension. Instead of running a server manually and having to refresh the browser tab every time you want to see your changes, you can now install this awesome extension and have it all be taken care of for you!
+3. Start Visual Studio Code's "Live Server" extension. If you don't have it installed:
    1. Click on the extensions icons in the left-hand side navigation.
    2. Search for "Live Server".
    3. Click install next to the extension by "Ritwick Dey". You may have to reload the window.
 
       ![Live Server](./images/Live-Server.png)
 
-   4. Once it's installed, click "Go Live" on the bottom right of the window. This should start the server and automatically open a new tab in your browser at `http://127.0.0.1:5500/` (don't worry if the port number is different).
+   4. Once it's installed, click "Go Live" on the bottom right of the window. This should start the server and automatically open a new tab in your browser at `http://127.0.0.1:5500/` (or whatever port it says on your machine).
       - The files the server serves will be relative to the directory you had open in VSC when you hit "Go Live".
-
-4. Alternatively, you can run the server manually without installing "Live Server":
-   1. Open the VSC terminal (`` CTRL + ` ``) and run `npx http-server` (assuming you have NodeJS installed, if you don't, [download and install it from here](https://nodejs.org)) inside the root folder of the repo.
-   2. In your browser, navigate to `http://localhost:8080` (or whatever the URL is that is displayed in the terminal).
 
 ## 🌅 Breakout-0 (The "Day-0" Update)
 
 Breakout-0 displays the title screen and allows the user to toggle between the "Start" and "High Score" options.
 
-### Breakout State Flow
+### State Machines
 
-- Below we map out the state flow for our final version of Breakout.
+A **state machine** is a mechanism through which we handle the different "screens" (i.e. states) of our game. When you start your favourite game, you're usually not thrown right into the game itself. Rather, you're presented with a [title screen](https://www.youtube.com/watch?v=pi47bBT4G9Q) that gives you a menu with options. When you select one of those options, you're taken to a different "screen" in the game.
+
+![Mario Title Screen](./images/Mario-Title-Screen.png)
+
+_An example of one of the most well known title screens from [Super Mario Bros.](https://en.wikipedia.org/wiki/Super_Mario_Bros.)_
+
+Here's the state diagram we're going to use for the final version of Breakout:
+
+![Breakout State Flow](images/Breakout-State-Flow.png)
+
 - The program will begin in `TitleScreenState`, which can transition back and forth between itself and `HighScoreState` (since the user can check high scores before playing).
 - `TitleScreenState` can also transition to `PaddleSelectState`, which transitions on to `ServeState`.
 - During gameplay, the program will transition back and forth between `ServeState` and `PlayState` as the user loses health. If the user clears the level, the program transitions onto the `VictoryState` and then to the `ServeState` for the next level.
 - Alternatively, if the user loses all their lives before clearing the level, the program will transition from `PlayState` to `GameOverState`, optionally transitioning to the `EnterHighScoreState` (if the user achieves a high score) and then on to the `HighScoreState`, or transitioning from `GameOverState` to `TitleScreenState` if the user does not have a high score.
 
-![Breakout State Flow](images/Breakout-State-Flow.png)
-
 ### Important Code
 
-- In `globals.js` we define our state machine and populate it with states.
-- Currently in the `src/states` directory, we only have `StartState.js`:
+- We will manage all our game states using an overarching `StateMachine.js` class, which handles the logic for initializing and transitioning between them.
+- `State.js` is an abstract base class for the other states - it defines empty methods and passes them on to its children via [inheritance](https://www.youtube.com/watch?v=ajOYOxCanhE).
+- In `globals.js` we define our state machine and in `main.js` we populate it with states. The last state added is always set as the current state.
+- Currently in the `src/states` directory, we only have `TitleScreenState.js`:
   - `update()`: Allows the user to toggle between "Start" and "High Scores" on the screen, highlighting their selection and playing a toggle sound effect.
-  - `render()`: Includes some graphics configurations specific to the `StartState`.
-  - Like last week, our `State.js` is an abstract base class for our other states so that we don't have to redefine the same methods for each concrete state class.
-- Also in `globals.js`, we initialize our `sounds` object. Notice that instead of declaring `new Audio()` objects, we're now declaring `new SoundPool()` objects. If you take a look in `SoundPool.js`, you'll find a class that takes care of keeping an array (i.e. "pool") of sounds. The reason this is necessary is so that we can have multiple of the same sound play even when that sound is currently playing.
-  - To see this in action, uncomment line 37 in `globals.js` and comment line 38. In the browser, hold down either `w` or `s` and notice that the sound only starts to play again when the previous iteration of the sound is done. This is why we need a pool of sounds!
-- Finally in `globals.js`, we initialize our `images` object. Notice that instead of declaring `new Image()` objects, we're now declaring `new Graphic()` objects. If you take a look in `Graphic.js`, you'll find a class that takes care of wrapping the JS image API. One advantage of doing this is so that we can declare our image's size and source at the same time, instead of doing it separately in `globals.js`. To see the difference, compare how we're declaring images in Flappy Bird.
-- Be sure to read through each file carefully so as to understand its role in the overarching project. The code itself should look familiar, but do take the time to familiarize yourself with the organizational layout.
+  - `render()`: Includes some graphics configurations specific to the `TitleScreenState`.
+- Also in `globals.js`, we initialize our `sounds` object. Notice that instead of declaring `new Audio()` objects like we did last week, we're now declaring `new SoundPool()` objects. If you take a look in `SoundPool.js`, you'll find a class that takes care of keeping an array (i.e. "pool") of sounds. The reason this is necessary is so that we can have multiple of the same sound play even when that sound is currently playing.
+  - To see this in action, uncomment line 21 in `globals.js` and comment line 22. In the browser, hold down either `w` or `s` and notice that the sound only starts to play again when the previous iteration of the sound is done. This is why we need a pool of sounds!
+- Finally in `globals.js`, we initialize our `images` object. Notice that instead of declaring `new Image()` objects, we're declaring `new Graphic()` objects. If you take a look in `Graphic.js`, you'll find a class that takes care of wrapping the JS image API. One advantage of doing this is so that we can declare our image's size and source at the same time, instead of doing it separately.
+- **Be sure to read through each file carefully so as to understand its role in the overarching project.** The code itself should look familiar, but do take the time to familiarize yourself with the organizational layout.
 
 ## 👾 Breakout-1 (The "Sprite" Update)
 
@@ -70,9 +78,11 @@ Breakout-1 takes advantage of "sprite sheets" in order to render a paddle sprite
 
 A Sprite Sheet is essentially an image containing smaller images (i.e. "sprites") within itself. A sprite sheet can be split into "sprites", that is, rectangular sections of itself (each encapsulating a single sprite), so that instead of having multiple image files in our project for each sprite, we can more efficiently use a single file that we section out into sprites when rendering a particular sprite.
 
+![Breakout Sprite Sheet](./images/Sprite-Sheet.png)
+
 ### Important Functions
 
-- `SpriteManager.GenerateSpritepaddles(spriteSheet)`
+- `SpriteManager.generatePaddleSprites()`
   - This function extracts the paddle sprites from the main sprite sheet.
 - `Sprite::render(x, y)`
   - The sprite object contains the `x` and `y` coordinates of **where the sprite is located in the sprite sheet image**. The `x` and `y` that we pass to this render function is the **location we want to draw the sprite on the canvas**.
@@ -110,16 +120,7 @@ Breakout-3 renders bricks onto the screen. It implements bouncing behavior for t
 
 ### Important Algorithms
 
-To fix our paddle collision, we need to take the difference between the ball's `x` value and the paddle's center, which is:
-
-```javascript
-// Ball.js
-const paddleBallDistance = paddle.x + paddle.width / 2 - this.x;
-```
-
-We use this formula to scale the ball's `dx` in the negative direction.
-
-We perform this operation on either side of the paddle based on the paddle's `dx`. If on the right side, the differential will be negative, so we need to call `Math.abs()` to make it positive, then scale it by a positive amount so `dx` becomes positive.
+We want the player to control the trajectory of the ball based on where it hits the paddle. If the ball hits the center of the paddle, the ball should slow down and have a steeper angle. If the ball hits more towards the edges of the paddle, the ball should speed up and have a shallower angle. The code for this is explained in the next section.
 
 For brick collision, we must check which edge of the ball is not inside the brick:
 
@@ -138,9 +139,9 @@ This is a fairly simple collision algorithm, so it is not the most accurate, par
 
 ### Important Code
 
-- In `SpriteManager.js` you'll notice that we've added another method again, this time to extract the brick sprites from the sprite sheet.
+- In `SpriteManager.js` you'll notice that we've added another method, `generateBallSprites()`, to extract the brick sprites from the sprite sheet.
 - `Brick.js` creates our brick class:
-  - `constructor()` initializes a brick. Importantly, we include an `inPlay` flag to serve as a signal for whether a brick is still in play or if it should disappear from the screen. In the context of our breakout program, this is an effective shortcut, but do note that in larger programs, it would be better practice to free memory that is not being used instead of just hiding it from view.
+  - `constructor()` initializes a brick. Importantly, we include an `inPlay` flag to serve as a signal for whether a brick is still in play or if it should disappear from the screen. In the context of this Breakout game, this is an effective shortcut, but do note that in larger programs, it would be better practice to free memory that is not being used instead of just hiding it from view.
   - `hit()` hides a brick by toggling the `inPlay` flag to `false`.
   - `render()` renders a brick to the screen.
 - `PlayState.js` references a new class, `LevelMaker.js`, which encapsulates all the logic for generating new levels (i.e. different layouts for the bricks). It also checks for collisions between the ball and the bricks, hiding bricks as needed, and renders the "in play" bricks to the screen.
@@ -159,6 +160,10 @@ This is a fairly simple collision algorithm, so it is not the most accurate, par
         this.dx = minimumVelocity + (scaleFactor * Math.abs(paddleBallDistance));
     }
     ```
+
+  - First, we calculate the distance between the paddle and the ball to scale the ball's `dx`.
+  - `scaleFactor` and `minimumVelocity` are values that are used to control the ball's `dx` depending on where it hit the paddle.
+  - Then perform this operation on either side of the paddle based on the paddle's `dx`. If on the right side, the differential will be negative, so we need to call `Math.abs()` to make it positive, then scale it by a positive amount so `dx` becomes positive.
 
 - And below that, we've added a `handleBrickCollision()` function based on the pseudocode in the section above. We slightly increase the ball's velocity after a collision:
 
@@ -231,7 +236,7 @@ Breakout-4 implements the idea of "health" for the user, which is displayed on t
     ```
 
 - The score tracking can also be found in `PlayState::update()`, where we simply add 10 points to the score every time a ball/brick collision is detected.
-- `GameOverState.js`, which is unsurprisingly called when the user loses all health, simply renders a "Game Over" screen with the final score. When a user presses the enter key in this state, they're taken back to the `StartState`.
+- `GameOverState.js`, which is unsurprisingly called when the user loses all health, simply renders a "Game Over" screen with the final score. When a user presses the enter key in this state, they're taken back to the `TitleScreenState`.
 
 ## ⏩ Breakout-5 (The "Progression" Update)
 
@@ -316,9 +321,19 @@ Breakout-6 introduces the ability to add and view high scores. For our storage m
 - In `EnterHighScoreState.js`, we allow users to enter their high scores by choosing a 3-character name. The name is selected by toggling the 3 characters using the `w`, `a`, `s`, `d` keys. We use ASCII values to implement this behavior.
   - Once the user settles on a name, we write their score to local storage using `HighScoreManager`, taking care to only store the top 10 scores.
 
-## 🤹‍♀️ Breakout-7 (The "Particle" Update)
+## 🏓 Breakout-7 (The "Paddle Select" Update)
 
-Breakout-7 implements a rudimentary particle system to create a nicer visual effect when the ball collides with a brick. For a fantastic introduction to particles, [please watch this video from The Coding Train](https://youtu.be/syR0klfncCk).
+Breakout-7 introduces a new state that allows the user to select a paddle skin before starting the game.
+
+### Important Code
+
+- In `PaddleSelectState.js`, we render a new screen to the user which contains some text, a left arrow, a right arrow, and a paddle.
+- The user can toggle between paddles using `a` and `d` and can make a selection by pressing enter.
+- Notice that this state is now in charge of transitioning over to `ServeState` and passing along the relevant values instead of `TitleScreenState`.
+
+## ✨ Breakout-8 (The "Polish" Update)
+
+Breakout-8 implements a rudimentary particle system to create a nicer visual effect when the ball collides with a brick. For a fantastic introduction to particles, [please watch this video from The Coding Train](https://youtu.be/syR0klfncCk). As the final update, we're also adding music.
 
 ### Important Code
 
@@ -326,16 +341,7 @@ Breakout-7 implements a rudimentary particle system to create a nicer visual eff
 - In the `constructor()` of `Brick.js`, we define a new array of `particles` that will be populated in `hit()` and a `colours` array of RGB values corresponding to the blue, green, red, purple, and gold colours of our bricks from the sprite sheet.
   - In `hit()`, we then use `colours` to set the colour when instantiating new particle objects.
   - In `update()` and `render()`, we make sure every particle gets updated and drawn to the screen according to each particle's individual `life` value.
-
-## 🏓 Breakout-8 (The "Paddle Select" Update)
-
-Breakout-8 introduces a new state that allows the user to select a paddle skin before starting the game. As the final update, we're also adding music.
-
-### Important Code
-
-- In `PaddleSelectState.js`, we render a new screen to the user which contains some text, a left arrow, a right arrow, and a paddle.
-- The user can toggle between paddles using `a` and `d` and can make a selection by pressing enter.
-- Notice that this state is now in charge of transitioning over to `ServeState` and passing along the relevant values instead of `TitleScreenState`.
+  - Make sure to now call `brick.update(dt)` in `PlayState.js`!
 - Finally, we add some music to the game in `globals.js` by adding the music track to our `sounds` object (notice the `true` for looping) and calling `sounds.music.play()` in `Game::start()`.
 
 And with that, we have a fully functioning game of Breakout!
@@ -343,3 +349,5 @@ And with that, we have a fully functioning game of Breakout!
 ## 📚 References
 
 - [Harvard's CS50 Introduction to Game Development - Breakout](https://cs50.harvard.edu/games/2018/notes/2/)
+- [Particle Systems - The Coding Train](https://youtu.be/syR0klfncCk)
+- [The Art of Video Game Title Screens - NakeyJakey](https://www.youtube.com/watch?v=pi47bBT4G9Q)

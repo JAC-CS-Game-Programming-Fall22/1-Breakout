@@ -7,6 +7,13 @@ import {
 import SpriteManager from "./SpriteManager.js";
 
 export default class UserInterface {
+	/**
+	 * A helper class to draw the UI so that it can be used in many states.
+	 *
+	 * @param {Number} health
+	 * @param {Number} score
+	 * @param {Number} level
+	 */
 	constructor(health, score, level) {
 		this.health = health;
 		this.score = score;

@@ -8,6 +8,10 @@ import {
 import LevelMaker from "../LevelMaker.js";
 import State from "./State.js";
 
+/**
+ * Represents the state that the game is in when we've just completed a level.
+ * Very similar to the ServeState, except here we increment the level.
+ */
 export default class VictoryState extends State {
 	constructor() {
 		super();

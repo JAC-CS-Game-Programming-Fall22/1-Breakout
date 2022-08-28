@@ -41,7 +41,7 @@ export default class PlayState extends State {
 		 * immediately returns false. Otherwise, if callback returns a truthy value
 		 * for all elements, every returns true.
 		 *
-		 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every
+		 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every
 		 */
 		return this.bricks.every(brick => !brick.inPlay);
 	}
@@ -125,9 +125,6 @@ export default class PlayState extends State {
 
 		this.paddle.update(dt);
 		this.ball.update(dt);
-		this.bricks.forEach((brick) => {
-			brick.update(dt);
-		});
 	}
 
 	render() {

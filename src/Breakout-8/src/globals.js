@@ -1,43 +1,19 @@
 import Graphic from "./Graphic.js";
 import SoundPool from "./SoundPool.js";
 import StateMachine from "./StateMachine.js";
-import EnterHighScoreState from "./states/EnterHighScoreState.js";
-import GameOverState from "./states/GameOverState.js";
-import HighScoreState from "./states/HighScoreState.js";
-import PaddleSelectState from "./states/PaddleSelectState.js";
-import PlayState from "./states/PlayState.js";
-import ServeState from "./states/ServeState.js";
-import TitleScreenState from "./states/TitleScreenState.js";
-import VictoryState from "./states/VictoryState.js";
 
-export const canvas = document.querySelector('canvas');
-export const context = canvas.getContext('2d');
-
-export const CANVAS_WIDTH = canvas.width;
-export const CANVAS_HEIGHT = canvas.height;
-
+/**
+ * We initialize our game by grabbing the `canvas` element from
+ * the DOM located in `index.html` and getting the `context` object
+ * from it.
+ */
+export const canvas = document.createElement('canvas');
+export const context = canvas.getContext('2d') || new CanvasRenderingContext2D();
+export const CANVAS_WIDTH = 432;
+export const CANVAS_HEIGHT = 243;
+export const keys = {};
 export const TILE_SIZE = 16;
 export const MAX_HIGH_SCORES = 10;
-
-export const keys = {};
-
-canvas.addEventListener('keydown', event => {
-	keys[event.key] = true;
-});
-
-canvas.addEventListener('keyup', event => {
-	keys[event.key] = false;
-});
-
-const fonts = [
-	new FontFace('Joystix', 'url(./fonts/Joystix.ttf)'),
-];
-
-fonts.forEach((font) => {
-	font.load().then(font => {
-		document.fonts.add(font);
-	});
-})
 
 export const images = {
 	arrows: new Graphic('./images/arrows.png', 48, 24),
@@ -60,27 +36,4 @@ export const sounds = {
 	wallHit: new SoundPool('./sounds/wall_hit.wav', 5, 0.1),
 };
 
-/**
- * The state machine we'll be using to transition between various states
- * in our game instead of clumping them together in our update and draw methods.
- *
- * Current game state can be any of the following:
- *   1. 'title-screen' (the beginning of the game, where we're told to press Enter)
- *   2. 'play' (the ball is in play, bouncing between paddles)
- *   3. 'serve' (waiting on a key press to serve the ball)
- *   4. 'game-over' (the player has lost; display score and allow restart)
- *   5. 'victory' (the current level is over, with a victory jingle)
- *   6. 'high-score' (displays all the high scores)
- *   7. 'enter-high-score' (player got a high score and can enter their name)
- *   8. 'paddle-select' (the player can select a skin for their paddle before playing)
- */
 export const stateMachine = new StateMachine();
-
-stateMachine.add('game-over', new GameOverState());
-stateMachine.add('serve', new ServeState());
-stateMachine.add('play', new PlayState());
-stateMachine.add('victory', new VictoryState());
-stateMachine.add('high-score', new HighScoreState());
-stateMachine.add('enter-high-score', new EnterHighScoreState());
-stateMachine.add('paddle-select', new PaddleSelectState());
-stateMachine.add('title-screen', new TitleScreenState());

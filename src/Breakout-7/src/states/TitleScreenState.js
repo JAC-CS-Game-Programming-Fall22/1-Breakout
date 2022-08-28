@@ -1,4 +1,3 @@
-import Ball from "../Ball.js";
 import {
 	CANVAS_HEIGHT,
 	CANVAS_WIDTH,
@@ -8,9 +7,6 @@ import {
 	sounds,
 	stateMachine
 } from "../globals.js";
-import LevelMaker from "../LevelMaker.js";
-import Paddle from "../Paddle.js";
-import UserInterface from "../UserInterface.js";
 import State from "./State.js";
 
 /**
@@ -46,19 +42,7 @@ export default class TitleScreenState extends State {
 			sounds.confirm.play();
 
 			if (this.highlighted === this.menuOptions.start) {
-				const health = 3;
-				const score = 0;
-				const level = 1;
-
-				stateMachine.change('serve', {
-					paddle: new Paddle(),
-					ball: new Ball(),
-					bricks: LevelMaker.createMap(level),
-					health: health,
-					score: score,
-					userInterface: new UserInterface(health, score, level),
-					level: level,
-				});
+				stateMachine.change('paddle-select');
 			}
 			else {
 				stateMachine.change('high-score');
