@@ -36,6 +36,9 @@ export default class Paddle {
 		 */
 		this.size = 1;
 
+		// There are 4 blue paddles, 4 green paddles, etc.
+		this.numberOfPaddlesPerColour = 4;
+
 		this.paddleSpeed = 500;
 
 		this.sprites = SpriteManager.generatePaddleSprites();
@@ -72,13 +75,13 @@ export default class Paddle {
 	}
 
 	render() {
-		/**
-		 * +4 since there are 4 sizes of paddles.
-		 *
-		 * If you find yourself writing comments to explain magic numbers, you
-		 * may want to rethink how you're doing things! This magic number should
-		 * probably go in its own variable/constant. Where do you think that should live?
-		 */
-		this.sprites[this.size + 4 * this.skin].render(this.x, this.y);
+		this.sprites[this.getSpriteIndex()].render(this.x, this.y);
+	}
+
+	/**
+	 * @returns The index (0 to 15) of the sprite to render based on the paddle's size and skin.
+	 */
+	getSpriteIndex() {
+		return this.size + this.numberOfPaddlesPerColour * this.skin;
 	}
 }
